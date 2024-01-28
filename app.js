@@ -4,7 +4,7 @@ const express = require('express');
 const app = express();
 const bodyParser = require('body-parser');
 // const multer = require('multer');
-const mongoose = require('mongoose');
+// const mongoose = require('mongoose');
 
 const feedRoutes = require("./routes/feed");
 const authRoutes = require("./routes/auth");
@@ -57,15 +57,34 @@ app.use((error, req, res, next) => {
     });
 });
 
-mongoose.connect('mongodb+srv://nandlal:wvtbvkDhdmKiyzBy@cluster0.qaa1jk5.mongodb.net/instagramClone?retryWrites=true&w=majority')
-    .then(result => {
-        app.listen(3001, () => {
-            console.log("I am building social media app like Instagram");
-        })
-    })
-    .catch(err => {
-        console.log(err);
-    });
+module.exports = app;
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+// mongoose.connect('mongodb+srv://nandlal:wvtbvkDhdmKiyzBy@cluster0.qaa1jk5.mongodb.net/instagramClone?retryWrites=true&w=majority')
+//     .then(result => {
+//         app.listen(3001, () => {
+//             console.log("I am building social media app like Instagram");
+//         })
+//     })
+//     .catch(err => {
+//         console.log(err);
+//     });
 
 
 

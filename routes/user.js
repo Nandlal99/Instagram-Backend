@@ -9,7 +9,7 @@ const isAuth = require("../middleware/is-auth");
 const upload = require("../middleware/multer");
 
 // Post -- update the user details
-router.post("/edit", isAuth, userController.updateUserDetail);
+router.post("/edit", isAuth, upload.single('profilePic'), userController.updateUserDetail);
 
 router.get("/details", isAuth, userController.getUserDetail);
 

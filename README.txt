@@ -39,6 +39,7 @@ App required routes ---
     2.Login
         --- Login app required email & password
     3. Logout User
+        --- clear session and redirect to login 
 
 3.User routes ---
     1.Update User 

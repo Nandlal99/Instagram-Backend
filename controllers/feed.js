@@ -27,9 +27,20 @@ exports.getPosts = async (req, res, next) => {
                 }
             },
             {
+                $addFields: {
+                    "User_details.profilePicURL": { $concat: ["http://localhost:3001/", "$User_details.profilePic"] }
+                }
+            },
+            {
+                $addFields: {
+                    imageURL: { $concat: ["http://localhost:3001/", "$imageUrl"] }
+                }
+            },
+            {
                 $project: {
                     _id: 1,
                     imageUrl: 1,
+                    imageURL: 1,
                     content: 1,
                     createdBy: 1,
                     likes: 1,
@@ -39,13 +50,18 @@ exports.getPosts = async (req, res, next) => {
                     User_details: {
                         name: 1,
                         email: 1,
-                        profilePic: 1
+                        profilePic: 1,
+                        profilePicURL: 1,
                     }
                 }
             }
         ]);
 
         // console.log(data);
+        // console.log("http://localhost:3001/" + data?.post[0]?.imageUrl);
+        // data.post.map((value) => {
+        //     value.imageURL = "http://localhost:3001/" + value.imageURL;
+        // });
 
         res.status(200).json({
             message: "Fetched posts successfully!",
@@ -183,7 +199,8 @@ exports.deletePost = async (req, res, next) => {
             error.statusCode = 404;
             throw error;
         }
-        if (post.creator.toString() !== req.userId) {
+        // console.log(post.createdBy);
+        if (post.createdBy.toString() !== req.userId) {
             const error = new Error('Not authorized!');
             error.statusCode = 403;
             throw error;
@@ -207,6 +224,36 @@ exports.deletePost = async (req, res, next) => {
     }
 };
 
+exports.updateLikes = async (req, res, next) => {
+    const postId = req.body.postId;
+    if (!postId) {
+        const error = new Error("Data is incorrect !!");
+        error.statusCode = 422;
+        throw error;
+    }
+
+    try {
+        const post = await Post.findById(postId);
+        if (!post) {
+            const error = new Error("Could not find post !!!");
+            error.statusCode = 404;
+            throw error;
+        }
+        const userId = req.userId;
+        const result = await Post.findByIdAndUpdate(postId, { $push: { likes: userId } });
+        res.status(200).json({
+            message: "Successfully like the post!",
+            post: result
+        });
+
+    } catch (err) {
+        if (!err.statusCode) {
+            err.statusCode = 500;
+        }
+        next(err);
+    }
+
+}
 
 const clearImage = (filePath) => {
     filePath = path.join(__dirname, "..", filePath);
